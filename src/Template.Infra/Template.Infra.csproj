@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ProjectGuid>{BCB707A4-298A-48F0-861D-94360B06C19E}</ProjectGuid>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.123" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Template.Domain\Template.Domain.csproj" />
+  </ItemGroup>
+	<Target Name="PostClean" AfterTargets="Clean">
+		<RemoveDir Directories="$(BaseIntermediateOutputPath)" />
+		<!-- obj -->
+		<RemoveDir Directories="$(BaseOutputPath)" />
+		<!-- bin -->
+	</Target>
+  
+</Project>

@@ -1,0 +1,59 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverageAttribute" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<IsPackable>false</IsPackable>
+		<ProjectGuid>{F8C6759D-2B77-4944-9CC3-50CED868B3A4}</ProjectGuid>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Bogus" Version="34.0.2" />
+		<PackageReference Include="coverlet.collector" Version="3.1.2">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="coverlet.msbuild" Version="3.1.2">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.2.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.0" />
+		<PackageReference Include="Moq" Version="4.18.2" />
+		<PackageReference Include="ReportGenerator" Version="5.1.9" />
+		<PackageReference Include="xunit" Version="2.4.2" />
+		<PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\..\src\Template.API\Template.API.csproj" />
+	  <ProjectReference Include="..\..\src\Template.Domain\Template.Domain.csproj" />
+	  <ProjectReference Include="..\..\src\Template.Infra\Template.Infra.csproj" />
+	  <ProjectReference Include="..\Template.Core.Tests\Template.Core.Tests.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Update="xunit.runner.json">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
+	<Target Name="GenerateHtmlCoverageReport" AfterTargets="GenerateCoverageResultAfterTest">
+		<ItemGroup>
+			<CoverageFiles Include="..\*\opencovertests.xml" />
+		</ItemGroup>
+		<ReportGenerator ReportFiles="@(CoverageFiles)" TargetDirectory="../code_coverage" HistoryDirectory="../code_coverage/history" ReportTypes="HtmlInline_AzurePipelines;lcov;Badges" />
+	</Target>
+	<Target Name="PostClean" AfterTargets="Clean">
+		<RemoveDir Directories="$(BaseIntermediateOutputPath)" />
+		<!-- obj -->
+		<RemoveDir Directories="$(BaseOutputPath)" />
+		<!-- bin -->
+	</Target>
+</Project>
