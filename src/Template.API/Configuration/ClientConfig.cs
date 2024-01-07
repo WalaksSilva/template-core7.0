@@ -13,7 +13,7 @@ namespace Template.API.Configuration
 {
     public static class ClientConfig
     {
-        public static IServiceCollection RegisterDependencies(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection RegisterHttpClient(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddHttpClient<IViaCEPService, ViaCEPService>((s, c) =>
             {

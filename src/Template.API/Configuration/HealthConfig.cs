@@ -45,28 +45,5 @@ namespace Template.API.Configuration
 
             return services;
         }
-
-        public static IEndpointRouteBuilder AddHealthChecksEndpoint(this IEndpointRouteBuilder endpoints)
-        {
-            if (PlatformServices.Default.Application.ApplicationName != "testhost")
-            {
-                endpoints.MapHealthChecks("/health", new HealthCheckOptions
-                {
-                    Predicate = r => r.Tags.Contains("self"),
-                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-                });
-                endpoints.MapHealthChecks("/ready", new HealthCheckOptions
-                {
-                    Predicate = r => r.Tags.Contains("services"),
-                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-                });
-                endpoints.MapHealthChecksUI(setup =>
-                {
-                    setup.UIPath = "/health-ui";
-                });
-            }
-
-            return endpoints;
-        }
     }
 }

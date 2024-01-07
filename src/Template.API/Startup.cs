@@ -1,54 +1,26 @@
-﻿using AutoMapper;
-using HealthChecks.UI.Client;
-using HealthChecks.UI.Core;
+﻿using HealthChecks.UI.Client;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.PlatformAbstractions;
 using Microsoft.IdentityModel.Logging;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.Net.Http.Headers;
 using NSwag;
 using NSwag.Generation.Processors.Security;
-using Polly;
-using Polly.CircuitBreaker;
-using System;
-using System.Data.Common;
-using System.Data.SqlClient;
-using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text.Json.Serialization;
 using Template.API.Configuration;
 using Template.API.Extensions;
 using Template.API.Filters;
 using Template.API.Middlewares;
-using Template.API.Services;
-using Template.API.Services.Interfaces;
-using Template.API.Settings;
-using Template.Domain.Interfaces.Identity;
-using Template.Domain.Interfaces.Notifications;
-using Template.Domain.Interfaces.Repository;
-using Template.Domain.Interfaces.Services;
-using Template.Domain.Interfaces.UoW;
-using Template.Domain.Notifications;
-using Template.Infra.Context;
-using Template.Infra.Identity;
-using Template.Infra.Repository;
-using Template.Infra.Services;
-using Template.Infra.UoW;
 
 namespace Template.API;
 
@@ -98,39 +70,8 @@ public class Startup
             x.Providers.Add<GzipCompressionProvider>();
         });
 
-        this.RegisterHttpClient(services);
-
-        if (PlatformServices.Default.Application.ApplicationName != "testhost")
-        {
-            var healthCheck = services.AddHealthChecksUI(setupSettings: setup =>
-            {
-                setup.DisableDatabaseMigrations();
-                setup.MaximumHistoryEntriesPerEndpoint(6);
-                setup.AddWebhookNotification("Teams", Configuration["Webhook:Teams"],
-                    payload: File.ReadAllText(Path.Combine(".", "MessageCard", "ServiceDown.json")),
-                    restorePayload: File.ReadAllText(Path.Combine(".", "MessageCard", "ServiceRestore.json")),
-                    customMessageFunc: (str, report) =>
-                    {
-                        var failing = report.Entries.Where(e => e.Value.Status == UIHealthStatus.Unhealthy);
-                        return $"{AppDomain.CurrentDomain.FriendlyName}: {failing.Count()} healthchecks are failing";
-                    }
-                    );
-            }).AddInMemoryStorage();
-
-            var builder = healthCheck.Services.AddHealthChecks();
-
-            //500 mb
-            builder.AddProcessAllocatedMemoryHealthCheck(500 * 1024 * 1024, "Process Memory", tags: new[] { "self" });
-            //500 mb
-            builder.AddPrivateMemoryHealthCheck(1500 * 1024 * 1024, "Private memory", tags: new[] { "self" });
-
-            builder.AddSqlServer(Configuration["ConnectionStrings:CustomerDB"], tags: new[] { "services" });
-
-            //dotnet add <Project> package AspNetCore.HealthChecks.OpenIdConnectServer
-            builder.AddIdentityServer(new Uri(Configuration["Authentication:Authority"]), "SSO Inova", tags: new[] { "services" });
-
-            builder.AddApplicationInsightsPublisher();
-        }
+        services.RegisterHttpClient(Configuration);
+        services.AddHealthConfiguration(Configuration);
 
         if (!WebHostEnvironment.IsProduction())
         {
@@ -173,8 +114,8 @@ public class Startup
         services.AddHttpContextAccessor();
         services.AddApplicationInsightsTelemetry();
 
-        this.RegisterServices(services);
-        this.RegisterDatabaseServices(services);
+        services.RegisterServices(Configuration);
+        services.RegisterDatabaseServices(Configuration);
     }
 
     public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env, TelemetryClient telemetryClient)
@@ -229,81 +170,5 @@ public class Startup
 
             endpoints.MapControllers();
         });
-    }
-
-    private void RegisterHttpClient(IServiceCollection services)
-    {
-        services.AddHttpClient<IViaCEPService, ViaCEPService>((s, c) =>
-        {
-            c.BaseAddress = new Uri(Configuration["API:ViaCEP"]);
-            c.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        })
-            .AddPolicyHandler(GetRetryPolicy())
-            .AddPolicyHandler(GetCircuitBreakerPolicy());
-    }
-
-    protected virtual void RegisterServices(IServiceCollection services)
-    {
-        services.Configure<ApplicationInsightsSettings>(Configuration.GetSection("ApplicationInsights"));
-
-        #region Service
-        services.AddScoped<ICustomerService, CustomerService>();
-
-        #endregion
-
-        #region Domain
-
-        services.AddScoped<IDomainNotification, DomainNotification>();
-
-        #endregion
-
-        #region Infra
-
-        services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-        services.AddScoped<ICustomerRepository, CustomerRepository>();
-        services.AddScoped<IIdentityService, IdentityService>();
-
-        #endregion
-    }
-
-    protected virtual void RegisterDatabaseServices(IServiceCollection services)
-    {
-        // if (PlatformServices.Default.Application.ApplicationName != "testhost")
-        // {
-        services.AddDbContext<EntityContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("CustomerDB")));
-        services.AddSingleton<DbConnection>(conn => new SqlConnection(Configuration.GetConnectionString("CustomerDB")));
-        services.AddScoped<DapperContext>();
-        // }
-    }
-
-    const string SleepDurationKey = "Broken";
-    static IAsyncPolicy<HttpResponseMessage> GetRetryPolicy()
-    {
-        return Policy<HttpResponseMessage>
-                .HandleResult(res => res.StatusCode == HttpStatusCode.GatewayTimeout || res.StatusCode == HttpStatusCode.RequestTimeout)
-                .Or<BrokenCircuitException>()
-                .WaitAndRetryAsync(4,
-                    sleepDurationProvider: (c, ctx) =>
-                    {
-                        if (ctx.ContainsKey(SleepDurationKey))
-                            return (TimeSpan)ctx[SleepDurationKey];
-                        return TimeSpan.FromMilliseconds(200);
-                    },
-                    onRetry: (dr, ts, ctx) =>
-                    {
-                        Console.WriteLine($"Context: {(ctx.ContainsKey(SleepDurationKey) ? "Open" : "Closed")}");
-                        Console.WriteLine($"Waits: {ts.TotalMilliseconds}");
-                    });
-    }
-
-    static IAsyncPolicy<HttpResponseMessage> GetCircuitBreakerPolicy()
-    {
-        return Policy<HttpResponseMessage>
-            .HandleResult(res => res.StatusCode == HttpStatusCode.GatewayTimeout || res.StatusCode == HttpStatusCode.RequestTimeout)
-            .CircuitBreakerAsync(3, TimeSpan.FromSeconds(30),
-               onBreak: (dr, ts, ctx) => { ctx[SleepDurationKey] = ts; },
-               onReset: (ctx) => { ctx[SleepDurationKey] = null; });
     }
 }

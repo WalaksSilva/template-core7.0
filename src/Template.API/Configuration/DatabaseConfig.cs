@@ -12,10 +12,13 @@ namespace Template.API.Configuration
         public static IServiceCollection RegisterDatabaseServices(this IServiceCollection services, IConfiguration configuration)
         {
 
+            // if (PlatformServices.Default.Application.ApplicationName != "testhost")
+            // {
             services.AddDbContext<EntityContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("CustomerDB")));
+                options.UseSqlServer(configuration.GetConnectionString("CustomerDB")));
             services.AddSingleton<DbConnection>(conn => new SqlConnection(configuration.GetConnectionString("CustomerDB")));
             services.AddScoped<DapperContext>();
+            // }
 
             return services;
         }
