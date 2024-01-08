@@ -136,7 +136,7 @@ public class Startup
         if (!env.IsProduction())
         {
             app.UseOpenApi();
-            app.UseSwaggerUi3();
+            app.UseSwaggerUi();
         }
 
         app.UseAuthentication();
