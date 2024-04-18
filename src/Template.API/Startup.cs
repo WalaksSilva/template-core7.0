@@ -17,6 +17,7 @@ using NSwag.Generation.Processors.Security;
 using System.IO.Compression;
 using System.Linq;
 using System.Text.Json.Serialization;
+using Template.Application.AutoMapper;
 using Template.API.Configuration;
 using Template.API.Extensions;
 using Template.API.Filters;
@@ -110,7 +111,7 @@ public class Startup
             });
         }
 
-        services.AddAutoMapper(typeof(Startup));
+        services.AddAutoMapper(typeof(MappingProfiles));
         services.AddHttpContextAccessor();
         services.AddApplicationInsightsTelemetry();
 

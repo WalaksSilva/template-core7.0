@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Template.API.ViewModels.Customer;
+﻿using Template.Application.ViewModels.Customer;
 
-namespace Template.API.Services.Interfaces;
+namespace Template.Application.Services.Interfaces;
 
 public interface ICustomerService
 {

@@ -1,5 +1,5 @@
 ﻿using Bogus;
-using Template.API.ViewModels.Address;
+using Template.Application.ViewModels.Address;
 
 namespace Template.Core.Tests.Mocks
 {

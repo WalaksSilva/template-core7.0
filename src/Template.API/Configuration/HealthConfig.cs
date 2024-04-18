@@ -38,7 +38,7 @@ namespace Template.API.Configuration
                 //builder.AddSqlServer(Configuration["ConnectionStrings:DefaultConnection"], tags: new[] { "services" });
 
                 //dotnet add <Project> package AspNetCore.HealthChecks.OpenIdConnectServer
-                //builder.AddIdentityServer(new Uri(Configuration["Authentication:Authority"]), "SSO Inova", tags: new[] { "services" });
+                //builder.AddIdentityServer(new Uri(Configuration["Authentication:Authority"]), "SSO blue", tags: new[] { "services" });
 
                 builder.AddApplicationInsightsPublisher();
             }

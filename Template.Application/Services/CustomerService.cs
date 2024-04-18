@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Template.API.Services.Interfaces;
-using Template.API.ViewModels.Customer;
+using Template.Application.Services.Interfaces;
+using Template.Application.ViewModels.Customer;
 using Template.Domain.Interfaces.Notifications;
 using Template.Domain.Interfaces.Repository;
 using Template.Domain.Interfaces.Services;
@@ -10,7 +8,7 @@ using Template.Domain.Interfaces.UoW;
 using Template.Domain.Models;
 using Template.Domain.Validation.CustomerValidation;
 
-namespace Template.API.Services;
+namespace Template.Application.Services;
 
 public class CustomerService : ICustomerService
 {

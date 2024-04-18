@@ -1,8 +1,8 @@
 ﻿using Moq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Template.API.Services;
-using Template.API.ViewModels.Customer;
+using Template.Application.Services;
+using Template.Application.ViewModels.Customer;
 using Template.Core.Tests.Mocks;
 using Template.Domain.Interfaces.Notifications;
 using Template.Domain.Interfaces.Repository;

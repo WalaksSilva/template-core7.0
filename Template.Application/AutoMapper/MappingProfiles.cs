@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using System.Diagnostics.CodeAnalysis;
-using Template.API.ViewModels.Customer;
+using Template.Application.ViewModels.Customer;
 using Template.Domain.Models;
 using Template.Domain.Models.Dapper;
 
-namespace Template.API.AutoMapper;
+namespace Template.Application.AutoMapper;
 
 [ExcludeFromCodeCoverage]
 public class MappingProfiles : Profile

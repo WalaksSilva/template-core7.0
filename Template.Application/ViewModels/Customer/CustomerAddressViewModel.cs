@@ -1,8 +1,7 @@
-﻿using System;
-using System.Text.Json.Serialization;
-using Template.API.ViewModels.Address;
+﻿using System.Text.Json.Serialization;
+using Template.Application.ViewModels.Address;
 
-namespace Template.API.ViewModels.Customer;
+namespace Template.Application.ViewModels.Customer;
 
 public class CustomerAddressViewModel
 {

@@ -1,4 +1,4 @@
-﻿namespace Template.API.ViewModels.Address;
+﻿namespace Template.Application.ViewModels.Address;
 
 public class AddressViewModel
 {

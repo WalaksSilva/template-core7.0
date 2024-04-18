@@ -1,5 +1,5 @@
 using AutoMapper;
-using Template.API.AutoMapper;
+using Template.Application.AutoMapper;
 
 namespace Template.Unit.Tests.Configuration
 {

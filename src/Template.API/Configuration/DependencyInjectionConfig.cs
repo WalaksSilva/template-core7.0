@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Template.API.Services.Interfaces;
-using Template.API.Services;
+using Template.Application.Services.Interfaces;
+using Template.Application.Services;
 using Template.API.Settings;
 using Template.Domain.Interfaces.Identity;
 using Template.Domain.Interfaces.Notifications;

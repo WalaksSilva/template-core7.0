@@ -2,8 +2,8 @@
 using NSwag.Annotations;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Template.API.Services.Interfaces;
-using Template.API.ViewModels.Customer;
+using Template.Application.Services.Interfaces;
+using Template.Application.ViewModels.Customer;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Template.API.Controllers;

@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Template.Infra.Context;
 using Microsoft.Extensions.Hosting;
 
-namespace Inova.MetaVerso.API.Extensions;
+namespace Template.API.Extensions;
 
 [ExcludeFromCodeCoverage]
 public static class WebHostExtensions

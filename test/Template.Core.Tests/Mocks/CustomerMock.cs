@@ -1,5 +1,5 @@
 ﻿using Bogus;
-using Template.API.ViewModels.Customer;
+using Template.Application.ViewModels.Customer;
 using Template.Domain.Models;
 using Template.Domain.Models.Dapper;
 

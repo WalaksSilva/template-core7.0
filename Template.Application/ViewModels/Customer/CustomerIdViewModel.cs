@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
-namespace Template.API.ViewModels.Customer;
+namespace Template.Application.ViewModels.Customer;
 
 public class CustomerIdViewModel
 {
