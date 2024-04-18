@@ -7,11 +7,11 @@
     "Test",
     "xUnit"
   ],
-  "name": "Walaks Silva - Web API .NET 8",
+  "name": "BlueCyber - Web API .NET 8",
   "generatorVersions": "[1.0.0.0-*)",
   "identity": "Template.API",
-  "groupIdentity": "Template.API.v3",
-  "shortName": "dev-model-api",
+  "groupIdentity": "Template.API.v1",
+  "shortName": "blue-api",
   "tags": {
     "language": "C#",
     "type": "project"
