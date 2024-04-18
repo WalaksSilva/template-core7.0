@@ -67,5 +67,5 @@ dotnet new -l
 Caso deseje remover o template BlueCyberAPI da sua lista de templates instalados, execute o comando:
 
 ```bash
-dotnet new --uninstall BlueCyber - Web API .NET 8
+dotnet new --uninstall [CaminhoTemplate]
 ```
