@@ -19,7 +19,7 @@ extends:
     azWebAppNamePRD: 'TO DO eg. api-customer-prd'
     azSubscriptionUAT: 'TO DO'
     azSubscriptionPRD: 'TO DO'
-    dotnetcoreDotNetVersion: '6.x'
+    dotnetcoreDotNetVersion: '8.x'
     dotnetcoreBuildProject: '**/*[API].csproj'
     dotnetcoreBuildConfiguration: Release
     dotnetcoreTestProject: '**/*[Tt]ests/*.csproj'
