@@ -42,9 +42,6 @@
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
-  <Target Name="InstallNpm" BeforeTargets="_GenerateRestoreProjectSpec">
-    <Exec Command="npm install" ConsoleToMsBuild="true" />
-  </Target>
 	<Target Name="PostClean" AfterTargets="Clean">
 		<RemoveDir Directories="$(BaseIntermediateOutputPath)" />
 		<!-- obj -->
